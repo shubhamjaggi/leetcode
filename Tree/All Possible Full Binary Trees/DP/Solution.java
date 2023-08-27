@@ -21,9 +21,10 @@ class Solution {
     }
 
     public List<TreeNode> getPossibilitiesUsingDP(int n, Map<Integer, List<TreeNode>> dp) {
-        List<TreeNode> allPossibleFBT = new ArrayList<>();
 
         if(dp.containsKey(n)) return dp.get(n);
+        
+        List<TreeNode> allPossibleFBT = new ArrayList<>();
 
         if(n % 2 == 0) {
             dp.put(n, allPossibleFBT);
