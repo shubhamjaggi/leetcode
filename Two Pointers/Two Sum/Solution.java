@@ -1,33 +1,28 @@
 class Solution {
     public int[] twoSum(int[] nums, int target) {
-        Map<Integer, Stack<Integer>> valTracker = new HashMap<>();
-        for(int i=0; i<nums.length; i++) {
-            if (valTracker.containsKey(nums[i])) {
-                Stack<Integer> tmp = valTracker.get(nums[i]);
-                tmp.push(i);
-                valTracker.put(nums[i], tmp);
-            }
-            else {
-                Stack<Integer> tmp = new Stack<>();
-                tmp.push(i);
-                valTracker.put(nums[i], tmp);
-            }
+        int n=nums.length;
+        Elem[] elems=new Elem[n];
+        for(int i=0;i<n;i++) elems[i]=new Elem(nums[i],i);
+
+        Arrays.sort(elems, (a,b)->Integer.compare(a.val,b.val));
+
+        int left=0; int right=nums.length-1;
+        while(left<right) {
+            int currSum=elems[left].val+elems[right].val;
+            if(currSum<target) left++;
+            else if(currSum>target) right--;
+            else return new int[] {elems[left].ind,elems[right].ind};
         }
+        return new int[] {0,0}; // will never happen
+    }
 
-        Arrays.sort(nums);
+    class Elem {
+        int val;
+        int ind;
 
-        int i=0, j=nums.length-1;
-        while(i<j) {
-            int sum = nums[i]+nums[j];
-            if(sum<target) i++;
-            else if(sum>target) j--;
-            else {
-                Stack<Integer> tmpI = valTracker.get(nums[i]);
-                Stack<Integer> tmpJ = valTracker.get(nums[j]);
-                return new int[] { tmpI.pop(), tmpJ.pop() };
-            }
+        Elem(int val,int ind) {
+            this.val=val;
+            this.ind=ind;
         }
-
-        return new int[] { 0, 0 };
     }
 }
