@@ -1,54 +1,29 @@
 class Solution {
     public List<List<Integer>> threeSum(int[] nums) {
-        Arrays.sort(nums);
-        Set<String> threeSumTriplets=new HashSet<>();
-
-        for(int i=0;i<nums.length-2;i++) {
-            List<int[]> twoSumIndPairs=getTwoSum(nums, i+1, -nums[i]);
-            for(int[] twoSumInds : twoSumIndPairs) {
-                if(twoSumInds[0]<twoSumInds[1]) {
-                    threeSumTriplets.add(nums[i]+","+nums[twoSumInds[0]]+","+nums[twoSumInds[1]]);
-                } else if(twoSumInds[0]>twoSumInds[1]) {
-                    threeSumTriplets.add(nums[i]+","+nums[twoSumInds[1]]+","+nums[twoSumInds[0]]);
-                }
+        int n=nums.length; Arrays.sort(nums);
+        List<List<Integer>> ans=new ArrayList<>();
+        for(int i=0;i<n-2;i++) {
+            if(i>0 && nums[i-1]==nums[i]) continue; // skip duplicates for the first elem
+            for(int[] pair:twoSum(nums,i+1,-nums[i])) {
+                ans.add(Arrays.asList(nums[i],pair[0],pair[1]));
             }
         }
-
-        return getSolution(threeSumTriplets);
+        return ans;
     }
 
-    private List<List<Integer>> getSolution(Set<String> threeSumTriplets) {
-        List<List<Integer>> solution = new ArrayList<>();
-
-        for(String threeSumTriplet:threeSumTriplets) {
-            List<Integer> triplet=new ArrayList<>();
-            String[] arr=threeSumTriplet.split(",");
-
-            triplet.add(Integer.valueOf(arr[0]));
-            triplet.add(Integer.valueOf(arr[1]));
-            triplet.add(Integer.valueOf(arr[2]));
-
-            solution.add(triplet);
-        }
-
-        return solution;
-    }
-
-    private List<int[]> getTwoSum(int[] nums, int startInd, int target) {
-        List<int[]> twoSumIndPairs=new ArrayList<>();
-        int j=startInd, k=nums.length-1;
-
-        while(j<k) {
-            if(nums[j]+nums[k]<target) {
-                j++;
-            } else if(nums[j]+nums[k]>target) {
-                k--;
-            } else {
-                twoSumIndPairs.add(new int[] { j,k });
-                j++; k--;
+    private List<int[]> twoSum(int[] nums,int start,int target) {
+        List<int[]> pairs=new ArrayList<>();
+        int left=start; int right=nums.length-1;
+        while(left<right) {
+            int currSum=nums[left]+nums[right];
+            if(currSum<target) left++;
+            else if(currSum>target) right--;
+            else {
+                pairs.add(new int[] { nums[left++],nums[right--] });
+                while(left<right && nums[left]==nums[left-1]) left++; // skip duplicates for left
+                while(left<right && nums[right]==nums[right+1]) right--; // skip duplicates for right
             }
         }
-
-        return twoSumIndPairs;
+        return pairs;
     }
 }
